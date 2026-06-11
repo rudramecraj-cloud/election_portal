@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>School Election</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    background:linear-gradient(135deg,#EAFBF1,#F7FFFA);
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.container{
+    width:450px;
+    background:white;
+    padding:45px;
+    border-radius:24px;
+    box-shadow:0 12px 30px rgba(46,139,87,0.12);
+    border:1px solid #D8F3E2;
+    text-align:center;
+}
+
+.icon{
+    font-size:72px;
+}
+
+h1{
+    color:#2E8B57;
+    margin-top:10px;
+    margin-bottom:10px;
+}
+
+.subtitle{
+    color:#64748B;
+    margin-bottom:30px;
+    line-height:1.6;
+}
+
+input{
+    width:100%;
+    padding:14px;
+    border:2px solid #D8F3E2;
+    border-radius:12px;
+    font-size:15px;
+    outline:none;
+    transition:0.3s;
+}
+
+input:focus{
+    border-color:#2E8B57;
+}
+
+button{
+    width:100%;
+    margin-top:20px;
+    padding:14px;
+    border:none;
+    border-radius:12px;
+    background:#2E8B57;
+    color:white;
+    font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover{
+    background:#256F46;
+    transform:translateY(-2px);
+}
+
+.footer{
+    margin-top:25px;
+    color:#94A3B8;
+    font-size:13px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="icon">🗳️</div>
+
+    <h1>SBOA PUBLIC (SR.SEC) SCHOOL</h1>
+
+    <h2 class="subtitle">
+        Digital Voting 2026
+    </h2>
+
+    <form method="POST" action="/start">
+
+        <input
+            type="text"
+            name="admission_no"
+            placeholder="Admission Number"
+            required
+        >
+
+        <button type="submit">
+            Start Voting
+        </button>
+
+    </form>
+
+    <div class="footer">
+        One Student • One Vote
+    </div>
+
+</div>
+
+</body>
+</html>

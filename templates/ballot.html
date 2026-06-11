@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Election Ballot</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    font-family:'Poppins',sans-serif;
+    box-sizing:border-box;
+}
+
+body{
+    background:#EAFBF1;
+    margin:0;
+    padding:40px;
+}
+
+.container{
+    max-width:900px;
+    margin:auto;
+}
+
+.header{
+    background:white;
+    padding:25px;
+    border-radius:24px;
+    box-shadow:0 12px 30px rgba(46,139,87,0.12);
+    border:1px solid #D8F3E2;
+    margin-bottom:25px;
+}
+
+.header h1{
+    color:#2E8B57;
+}
+
+.adm{
+    color:#64748B;
+}
+
+.card{
+    background:white;
+    padding:25px;
+    border-radius:20px;
+    margin-bottom:20px;
+    border:1px solid #D8F3E2;
+    box-shadow:0 10px 25px rgba(46,139,87,0.08);
+}
+
+.card h3{
+    color:#2E8B57;
+    margin-bottom:15px;
+}
+
+.option{
+    padding:14px;
+    border:1px solid #D8F3E2;
+    border-radius:12px;
+    margin-bottom:10px;
+    transition:0.2s;
+}
+
+.option:hover{
+    background:#F4FFF8;
+}
+
+.option label{
+    display:block;
+    cursor:pointer;
+}
+
+input[type="radio"]{
+    margin-right:10px;
+}
+
+.submit{
+    width:100%;
+    padding:16px;
+    border:none;
+    border-radius:14px;
+    background:#2E8B57;
+    color:white;
+    font-size:17px;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.submit:hover{
+    background:#256F46;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="header">
+    <h1>🗳 Election Ballot</h1>
+    <p class="adm">Admission No: {{ admission_no }}</p>
+</div>
+
+<form method="POST" action="/vote">
+
+<input type="hidden" name="admission_no" value="{{ admission_no }}">
+
+{% for category, candidates in categories.items() %}
+
+<div class="card">
+
+    <h3>{{ category }}</h3>
+
+    {% for candidate in candidates %}
+
+    <div class="option">
+        <label>
+            <input
+                type="radio"
+                name="{{ category }}"
+                value="{{ candidate }}"
+                required
+            >
+            {{ candidate }}
+        </label>
+    </div>
+
+    {% endfor %}
+
+</div>
+
+{% endfor %}
+
+<button class="submit">
+    Submit Vote
+</button>
+
+</form>
+
+</div>
+
+</body>
+</html>

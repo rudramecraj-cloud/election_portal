@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Election Results Dashboard</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    background:#EAFBF1;
+    padding:40px;
+}
+
+.container{
+    max-width:1100px;
+    margin:auto;
+}
+
+.header{
+    background:white;
+    padding:30px;
+    border-radius:24px;
+    margin-bottom:30px;
+    border:1px solid #D8F3E2;
+    box-shadow:0 12px 30px rgba(46,139,87,0.12);
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:20px;
+}
+
+.header h1{
+    color:#2E8B57;
+    margin-bottom:8px;
+}
+
+.header p{
+    color:#64748B;
+    margin-top:4px;
+}
+
+.button-group{
+    display:flex;
+    gap:12px;
+}
+
+.btn{
+    padding:12px 20px;
+    border:none;
+    border-radius:12px;
+    color:white;
+    cursor:pointer;
+    font-weight:600;
+    transition:0.3s;
+}
+
+.btn:hover{
+    transform:translateY(-2px);
+}
+
+.download-btn{
+    background:#2E8B57;
+}
+
+.download-btn:hover{
+    background:#256F46;
+}
+
+.logout-btn{
+    background:#DC2626;
+}
+
+.logout-btn:hover{
+    background:#B91C1C;
+}
+
+.card{
+    background:white;
+    border:1px solid #D8F3E2;
+    border-radius:20px;
+    padding:25px;
+    margin-bottom:25px;
+    box-shadow:0 8px 20px rgba(46,139,87,0.08);
+}
+
+.card h2{
+    color:#2E8B57;
+    margin-bottom:20px;
+}
+
+.winner{
+    background:#F4FFF8;
+    border-left:6px solid #16A34A;
+    padding:16px;
+    border-radius:12px;
+    margin-bottom:20px;
+}
+
+.winner h3{
+    color:#16A34A;
+    margin-bottom:8px;
+}
+
+.winner p{
+    margin-top:6px;
+    color:#334155;
+}
+
+.candidate{
+    margin-bottom:18px;
+}
+
+.candidate-name{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:8px;
+    color:#334155;
+    font-weight:500;
+}
+
+.bar{
+    width:100%;
+    height:18px;
+    background:#EDF7F0;
+    border-radius:20px;
+    overflow:hidden;
+}
+
+.fill{
+    height:100%;
+    background:#2E8B57;
+    border-radius:20px;
+}
+
+.vote-count{
+    color:#64748B;
+    font-size:14px;
+}
+
+.footer{
+    text-align:center;
+    margin-top:25px;
+    color:#64748B;
+    font-size:14px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+
+        <div>
+            <h1>🗳 Election Results Dashboard</h1>
+            <p>School Election 2026</p>
+            <p><strong>Total Votes Cast:</strong> {{ total_voters }}</p>
+        </div>
+
+        <div class="button-group">
+
+            <a href="/download-results">
+                <button class="btn download-btn">
+                    📊 Download Excel
+                </button>
+            </a>
+
+            <a href="/logout">
+                <button class="btn logout-btn">
+                    Logout
+                </button>
+            </a>
+
+        </div>
+
+    </div>
+
+    {% for category, candidates in results.items() %}
+
+        {% if candidates %}
+
+            {% set max_votes = candidates[0][1] %}
+
+            <div class="card">
+
+                <h2>{{ category }}</h2>
+
+                <div class="winner">
+
+                    {% if leaders[category]|length == 1 %}
+
+                        <h3>🏆 Leading Candidate</h3>
+
+                        <strong>
+                            {{ leaders[category][0] }}
+                        </strong>
+
+                        <p>
+                            {{ max_votes }} votes
+                        </p>
+
+                    {% else %}
+
+                        <h3>🤝 Tie for Lead</h3>
+
+                        <p>
+
+                            {% for person in leaders[category] %}
+
+                                <strong>{{ person }}</strong>{% if not loop.last %}, {% endif %}
+
+                            {% endfor %}
+
+                        </p>
+
+                        <p>
+                            {{ max_votes }} votes each
+                        </p>
+
+                    {% endif %}
+
+                </div>
+
+                {% for candidate, votes in candidates %}
+
+                    <div class="candidate">
+
+                        <div class="candidate-name">
+
+                            <span>{{ candidate }}</span>
+
+                            <span class="vote-count">
+
+                                {{ votes }} votes
+
+                                ({{ ((votes / category_totals[category]) * 100)|round(1) }}%)
+
+                            </span>
+
+                        </div>
+
+                        <div class="bar">
+
+                            <div
+                                class="fill"
+                                style="width: {{ ((votes / category_totals[category]) * 100)|round(1) }}%;">
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% endif %}
+
+    {% endfor %}
+
+    <div class="footer">
+        Election Management System • Admin Dashboard
+    </div>
+
+</div>
+
+</body>
+</html>
