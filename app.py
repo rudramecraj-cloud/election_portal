@@ -134,6 +134,22 @@ def vote():
 def voting():
     return render_template("index.html")
 
+@app.route("/reset-election")
+def reset_election():
+
+    if not session.get("admin"):
+        return "Unauthorized"
+
+    conn = sqlite3.connect("database.db")
+    c = conn.cursor()
+
+    c.execute("DELETE FROM votes")
+
+    conn.commit()
+    conn.close()
+
+    return "Election reset successfully"
+
 # ---------- RESULTS ----------
 @app.route("/results")
 def results():
