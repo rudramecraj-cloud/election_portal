@@ -3,6 +3,7 @@ from flask import send_file
 from openpyxl import Workbook
 from collections import defaultdict
 import sqlite3
+import os
 
 CATEGORIES = {
     "HEAD BOY": ["Aditya Biju", "Shravan Sonu Joseph"],
@@ -14,6 +15,29 @@ app = Flask(__name__)
 app.secret_key = "SBOA_2026_Election_7xK29QpLm"
 
 ADMIN_PASSWORD = "SBOA@Election2026"
+
+@app.route("/debug-db")
+def debug_db():
+    import os
+    return os.path.abspath("database.db")
+
+@app.route("/debug-files")
+def debug_files():
+    import os
+    return "<br>".join(os.listdir("."))
+
+@app.route("/debug-count")
+def debug_count():
+    conn = sqlite3.connect("database.db")
+    c = conn.cursor()
+
+    c.execute("SELECT COUNT(*) FROM votes")
+    count = c.fetchone()[0]
+
+    conn.close()
+
+    return f"Votes in DB: {count}"
+
 # ---------- DB INIT ----------
 def init_db():
     conn = sqlite3.connect("database.db")
