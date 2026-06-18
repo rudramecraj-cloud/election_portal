@@ -6,15 +6,15 @@ import sqlite3
 import os
 
 CATEGORIES = {
-    "HEAD BOY": ["Aditya Biju", "Shravan Sonu Joseph"],
-    "HEAD GIRL": ["Adithi P Dinesh", "Ann Mary Leo"],
-    "DISCIPLINE MINISTER": ["Abigail Libeesh", "Milan Paul", "Theertha Danesh"],
-    "SPORTS CAPTAIN": ["Arya Nanda K.R", "Ann Rachel"]
+    "PRESIDENT": ["Emma", "Charlotte"],
+    "VICE PRESIDENT": ["James", "Chloe"],
+    "SECRETARY": ["Abigail", "Ethan", "Ruby"],
+    "EXECUTIVE": ["Daniel", "Lucas"]
 }
 app = Flask(__name__)
-app.secret_key = "SBOA_2026_Election_7xK29QpLm"
+app.secret_key = "Election_7xK29QpLm"
 
-ADMIN_PASSWORD = "SBOA@Election2026"
+ADMIN_PASSWORD = "Election2026"
 
 @app.route("/debug-db")
 def debug_db():
@@ -46,7 +46,7 @@ def init_db():
     c.execute("""
     CREATE TABLE IF NOT EXISTS votes (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        admission_no TEXT,
+        key TEXT,
         category TEXT,
         candidate TEXT,
         timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -60,8 +60,6 @@ init_db()
 
 # ---------- HOME ----------
 @app.route("/")
-def landing():
-    return render_template("landing.html")
 
 @app.route("/begin")
 def begin():
@@ -89,16 +87,16 @@ def admin():
 @app.route("/start", methods=["POST"])
 def start():
 
-    admission_no = request.form.get("admission_no")
+    key = request.form.get("key")
 
-    if not admission_no:
-        return "Missing Admission Number"
+    if not key:
+        return "Missing Key"
 
     conn = sqlite3.connect("database.db")
     c = conn.cursor()
 
     # 🔐 check if already voted
-    c.execute("SELECT * FROM votes WHERE admission_no=?", (admission_no,))
+    c.execute("SELECT * FROM votes WHERE key=?", (key,))
     existing = c.fetchone()
 
     if existing:
@@ -111,25 +109,25 @@ def start():
 
     # allow voting
     return render_template("ballot.html",
-                           admission_no=admission_no,
+                           key=key,
                            categories=CATEGORIES)
 
 # ---------- VOTE SUBMISSION ----------
 @app.route("/vote", methods=["POST"])
 def vote():
 
-    admission_no = request.form.get("admission_no")
+    key = request.form.get("key")
 
-    if not admission_no:
+    if not key:
         return render_template(
         "error.html",
-        message="Admission number is required."
+        message="Key is required."
     )
     conn = sqlite3.connect("database.db")
     c = conn.cursor()
 
     # double check safety
-    c.execute("SELECT * FROM votes WHERE admission_no=?", (admission_no,))
+    c.execute("SELECT * FROM votes WHERE key=?", (key,))
     if c.fetchone():
         conn.close()
         return render_template(
@@ -145,8 +143,8 @@ def vote():
             return f"Missing vote for {category}"
 
         c.execute(
-            "INSERT INTO votes (admission_no, category, candidate) VALUES (?, ?, ?)",
-            (admission_no, category, candidate)
+            "INSERT INTO votes (key, category, candidate) VALUES (?, ?, ?)",
+            (key, category, candidate)
         )
 
     conn.commit()
@@ -223,7 +221,7 @@ def results():
 
     # Total number of students who voted
     c.execute("""
-    SELECT COUNT(DISTINCT admission_no)
+    SELECT COUNT(DISTINCT key)
     FROM votes
     """)
 
@@ -252,7 +250,7 @@ def download_results():
     c = conn.cursor()
 
     c.execute("""
-        SELECT admission_no,
+        SELECT key,
                timestamp,
                category,
                candidate
@@ -265,9 +263,9 @@ def download_results():
 
     votes = defaultdict(dict)
 
-    for admission_no, timestamp, category, candidate in rows:
+    for key, timestamp, category, candidate in rows:
 
-        key = (admission_no, timestamp)
+        key = (key, timestamp)
 
         votes[key][category] = candidate
 
@@ -278,20 +276,20 @@ def download_results():
 
     ws.append([
         "Timestamp",
-        "HEAD BOY",
-        "HEAD GIRL",
-        "DISCIPLINE MINISTER",
-        "SPORTS CAPTAIN"
+        "PRESIDENT",
+        "VICE PRESIDENT",
+        "SECRETARY",
+        "EXECUTIVE"
     ])
 
-    for (admission_no, timestamp), ballot in votes.items():
+    for (key, timestamp), ballot in votes.items():
 
         ws.append([
             timestamp,
-            ballot.get("HEAD BOY", ""),
-            ballot.get("HEAD GIRL", ""),
-            ballot.get("DISCIPLINE MINISTER", ""),
-            ballot.get("SPORTS CAPTAIN", "")
+            ballot.get("PRESIDENT", ""),
+            ballot.get("VICE PRESIDENT", ""),
+            ballot.get("SECRETARY", ""),
+            ballot.get("EXECUTIVE", "")
         ])
 
     filename = "Election_Results.xlsx"

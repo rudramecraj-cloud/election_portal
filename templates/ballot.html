@@ -103,12 +103,12 @@ input[type="radio"]{
 
 <div class="header">
     <h1>🗳 Election Ballot</h1>
-    <p class="adm">Admission No: {{ admission_no }}</p>
+    <p class="adm">Key: {{ key }}</p>
 </div>
 
 <form method="POST" action="/vote">
 
-<input type="hidden" name="admission_no" value="{{ admission_no }}">
+<input type="hidden" name="key" value="{{ key }}">
 
 {% for category, candidates in categories.items() %}
 
