@@ -60,7 +60,6 @@ init_db()
 
 # ---------- HOME ----------
 @app.route("/")
-
 @app.route("/begin")
 def begin():
     return redirect("/voting")
